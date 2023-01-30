@@ -8,4 +8,4 @@ int count_cols(std::vector<std::vector<float>> A);
 
 std::vector<std::vector<float>> allocate_empty_matrix(int m_rows, int n_cols);
 
-void check_matmul_compatibility(int A_cols, int B_rows);
+void check_compatibility(std::vector<std::vector<float>> A, std::vector<std::vector<float>> B);

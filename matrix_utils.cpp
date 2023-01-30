@@ -31,6 +31,10 @@ std::vector<std::vector<float>> allocate_empty_matrix(int m_rows, int n_cols){
     return matrix;
 }
 
-void check_matmul_compatibility(int A_cols, int B_rows){
-        if (A_cols != B_rows) throw;
+void check_compatibility(std::vector<std::vector<float>> A, std::vector<std::vector<float>> B){
+    int A_cols = count_cols(A);
+    
+    int B_rows = count_rows(B);
+
+    if (A_cols != B_rows) throw;
 }
