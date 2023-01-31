@@ -11,7 +11,7 @@ int main(){
     std::cout << '\n';
     print_matrix(B);
     std::cout << '\n';
-    auto C = matmul(A, B);
+    auto C = matmul_simple(A, B);
     print_matrix(C);
     return 0;
 }
