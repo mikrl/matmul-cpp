@@ -45,37 +45,50 @@ void check_compatibility(std::vector<std::vector<float>> A, std::vector<std::vec
 
 }
 
-float** matrix_to_arr(std::vector<std::vector<float>> A){
-    
-    int m_rows = count_rows(A);
-    int n_cols = count_cols(A);
-    
-    float** A_arr;
- 
-    A_arr = new float*[n_cols];
- 
-    for (int i=0; i<n_cols; i++){
-        A_arr[i] = new float[m_rows];
- 
-        for (int j=0; j<m_rows; j++){
-            A_arr[i][j] = A[i][j];
+float** matrix_to_arr(std::vector<std::vector<float>> A) {
+    int m = A.size();
+    int n = A[0].size();
+    std::cout << "M=" << m << '\n';
+    std::cout << "N=" << n << '\n';
+    float** arr = new float*[m];
+    std::cout << **arr << '\n';
+    int i, j;
+    for (i = 0; i < m; i++) {
+        arr[i] = new float[n];
+        for (j = 0; j < n; j++) {
+            arr[i][j] = A[i][j];
         }
     }
-    return A_arr;
+
+    return arr;
 }
 
-std::vector<std::vector<float>> arr_to_matrix(float** A_arr){
-    int m_rows = ARRAYSIZE(A_arr);
-    int n_cols = ARRAYSIZE(A_arr[0]);
-
-    std::vector<std::vector<float>> A(n_cols);
-
-    for (int i=0; i<n_cols; i++){
-        std::vector<float> row(m_rows);
-        A.push_back(row);
-        for (int j=0; j<m_rows; j++){
-            A[i][j] = A_arr[i][j];
-        }
+std::pair<int, int> get_dimensions(float** A) {
+  int rows = 0;
+  int cols = 0;
+  while (A[rows]) {
+    int col = 0;
+    while (A[rows][col]) {
+      ++col;
     }
-    return A;
+    cols = std::max(cols, col);
+    ++rows;
+  }
+  return std::make_pair(rows, cols);
+}
+
+
+std::vector<std::vector<float>> arr_to_matrix(float **A) {
+    auto A_dims = get_dimensions(A);
+    int rows = A_dims.first;
+    int cols = A_dims.second;
+
+    std::vector<std::vector<float>> matrix(rows);
+    for (int i = 0; i < rows; i++) {
+        matrix[i].resize(cols);
+    for (int j = 0; j < cols; j++) {
+      matrix[i][j] = A[i][j];
+    }
+  }
+  return matrix;
 }
