@@ -95,3 +95,18 @@ std::vector<std::vector<float>> unflatten_1D_array(std::pair<float*, int> flat_a
 
     return matrix;
 }
+
+int get_linear_index(int matrix_dims[2], int row_idx, int col_idx){
+    auto n_cols = matrix_dims[1];
+
+    return row_idx*n_cols + col_idx;
+}
+
+
+int get_row_idx(int idx_linear, int n_cols){
+    return idx_linear / n_cols;
+}
+
+int get_col_idx(int idx_linear, int n_cols){
+    return idx_linear % n_cols;
+}

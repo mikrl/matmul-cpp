@@ -24,7 +24,7 @@ TEST(MatrixUtilsTest, CheckCompatibility) {
     EXPECT_THROW(check_compatibility(A, B), std::runtime_error);
 }
 
-TEST(MatrixFunctions, allocateUninitializedMatrix) {
+TEST(MatrixUtilsTest, allocateUninitializedMatrix) {
   std::vector<std::vector<float>> A = allocate_empty_matrix(3, 3);
   EXPECT_EQ(count_rows(A), 3);
   EXPECT_EQ(count_cols(A), 3);
@@ -101,28 +101,58 @@ TEST(MatrixUtilsTest, CheckUnflatten) {
   EXPECT_EQ(unflattened_matrix[2][2], 9);
 }
 
-// // Test matrix_to_arr and arr_to_matrix functions
-// TEST(MatrixUtilsTest, MatrixArrConversion) {
-//   std::vector<std::vector<float>> A = {{1, 2, 3}, {4, 5, 6}};
-//   float** arr = matrix_to_arr(A);
+TEST(MatrixUtilsTest, LinearIndexCorrectnessTest) {
+    int matrix_dims[2] = {3, 4};
 
-//   // Check conversion from matrix to array
-//   EXPECT_EQ(arr[0][0], 1);
-//   EXPECT_EQ(arr[0][1], 2);
-//   EXPECT_EQ(arr[0][2], 3);
-//   EXPECT_EQ(arr[1][0], 4);
-//   EXPECT_EQ(arr[1][1], 5);
-//   EXPECT_EQ(arr[1][2], 6);
+    // Check index for the first row
+    EXPECT_EQ(get_linear_index(matrix_dims, 0, 0), 0);
+    EXPECT_EQ(get_linear_index(matrix_dims, 0, 1), 1);
+    EXPECT_EQ(get_linear_index(matrix_dims, 0, 2), 2);
+    EXPECT_EQ(get_linear_index(matrix_dims, 0, 3), 3);
 
-//   // Check conversion from array to matrix
-//   std::vector<std::vector<float>> B = arr_to_matrix(arr, A.size(), A[0].size());
-//   EXPECT_EQ(B[0][0], 1);
-//   EXPECT_EQ(B[0][1], 2);
-//   EXPECT_EQ(B[0][2], 3);
-//   EXPECT_EQ(B[1][0], 4);
-//   EXPECT_EQ(B[1][1], 5);
-//   EXPECT_EQ(B[1][2], 6);
-// }
+    // Check index for the second row
+    EXPECT_EQ(get_linear_index(matrix_dims, 1, 0), 4);
+    EXPECT_EQ(get_linear_index(matrix_dims, 1, 1), 5);
+    EXPECT_EQ(get_linear_index(matrix_dims, 1, 2), 6);
+    EXPECT_EQ(get_linear_index(matrix_dims, 1, 3), 7);
+
+    // Check index for the third row
+    EXPECT_EQ(get_linear_index(matrix_dims, 2, 0), 8);
+    EXPECT_EQ(get_linear_index(matrix_dims, 2, 1), 9);
+    EXPECT_EQ(get_linear_index(matrix_dims, 2, 2), 10);
+    EXPECT_EQ(get_linear_index(matrix_dims, 2, 3), 11);
+}
+
+TEST(MatrixUtilsTest, BlockIndicesCorrectnessTest) {
+    int matrix_dims[2] = {3, 4};
+    int block_indices[2];
+    // Test 1: Test first index (0, 0)
+    int linear_index = 0;
+
+    block_indices[0] = get_row_idx(linear_index, matrix_dims[1]);
+    block_indices[1] = get_col_idx(linear_index, matrix_dims[1]);
+
+    EXPECT_EQ(block_indices[0], 0);
+    EXPECT_EQ(block_indices[1], 0);
+
+    // Test 2: Test last index (2, 3)
+    linear_index = 11;
+
+    block_indices[0] = get_row_idx(linear_index, matrix_dims[1]);
+    block_indices[1] = get_col_idx(linear_index, matrix_dims[1]);
+
+    EXPECT_EQ(block_indices[0], 2);
+    EXPECT_EQ(block_indices[1], 3);
+
+    // Test 3: Test middle index (1, 2)
+    linear_index = 6;
+
+    block_indices[0] = get_row_idx(linear_index, matrix_dims[1]);
+    block_indices[1] = get_col_idx(linear_index, matrix_dims[1]);
+    
+    EXPECT_EQ(block_indices[0], 1);
+    EXPECT_EQ(block_indices[1], 2);
+}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

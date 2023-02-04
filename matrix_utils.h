@@ -21,4 +21,10 @@ std::pair<float*, int> flatten_2D_matrix(std::vector<std::vector<float>> matrix)
 
 std::vector<std::vector<float>> unflatten_1D_array(std::pair<float*, int> flat_array, std::pair<int, int> dims);
 
+int get_linear_index(int matrix_dims[2], int row_idx, int col_idx);
+
+int get_row_idx(int idx_linear, int n_cols);
+
+int get_col_idx(int idx_linear, int n_cols);
+
 #endif
