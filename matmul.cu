@@ -34,7 +34,7 @@ std::vector<std::vector<float>> matmul_cuda(std::vector<std::vector<float>> A, s
 
     matmul_GPU<<<num_blocks, threads_per_block>>>(A_arr, B_arr, C_arr);
 
-    std::vector<std::vector<float>> C = arr_to_matrix(C_arr);
+    std::vector<std::vector<float>> C = arr_to_matrix(C_arr, A_cols, B_rows);
 
     return C;
 

@@ -58,7 +58,7 @@ TEST(MatrixUtilsTest, MatrixArrConversion) {
   EXPECT_EQ(arr[1][2], 6);
 
   // Check conversion from array to matrix
-  std::vector<std::vector<float>> B = arr_to_matrix(arr);
+  std::vector<std::vector<float>> B = arr_to_matrix(arr, A.size(), A[0].size());
   EXPECT_EQ(B[0][0], 1);
   EXPECT_EQ(B[0][1], 2);
   EXPECT_EQ(B[0][2], 3);

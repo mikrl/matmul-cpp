@@ -48,10 +48,7 @@ void check_compatibility(std::vector<std::vector<float>> A, std::vector<std::vec
 float** matrix_to_arr(std::vector<std::vector<float>> A) {
     int m = A.size();
     int n = A[0].size();
-    std::cout << "M=" << m << '\n';
-    std::cout << "N=" << n << '\n';
     float** arr = new float*[m];
-    std::cout << **arr << '\n';
     int i, j;
     for (i = 0; i < m; i++) {
         arr[i] = new float[n];
@@ -63,32 +60,14 @@ float** matrix_to_arr(std::vector<std::vector<float>> A) {
     return arr;
 }
 
-std::pair<int, int> get_dimensions(float** A) {
-  int rows = 0;
-  int cols = 0;
-  while (A[rows]) {
-    int col = 0;
-    while (A[rows][col]) {
-      ++col;
-    }
-    cols = std::max(cols, col);
-    ++rows;
-  }
-  return std::make_pair(rows, cols);
-}
+std::vector<std::vector<float>> arr_to_matrix(float **A, int rows, int cols) {
 
-
-std::vector<std::vector<float>> arr_to_matrix(float **A) {
-    auto A_dims = get_dimensions(A);
-    int rows = A_dims.first;
-    int cols = A_dims.second;
-
-    std::vector<std::vector<float>> matrix(rows);
-    for (int i = 0; i < rows; i++) {
-        matrix[i].resize(cols);
-    for (int j = 0; j < cols; j++) {
-      matrix[i][j] = A[i][j];
-    }
-  }
+     std::vector<std::vector<float>> matrix(rows);
+     for (int i = 0; i < rows; i++) {
+         matrix[i].resize(cols);
+     for (int j = 0; j < cols; j++) {
+       matrix[i][j] = A[i][j];
+     }
+   }
   return matrix;
 }

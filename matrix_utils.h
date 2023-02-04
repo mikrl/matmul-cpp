@@ -15,7 +15,7 @@ void check_compatibility(std::vector<std::vector<float>> A, std::vector<std::vec
 
 float** matrix_to_arr(std::vector<std::vector<float>> A);
 
-std::vector<std::vector<float>> arr_to_matrix(float** A);
+std::vector<std::vector<float>> arr_to_matrix(float **A, int rows, int cols);
 
 
 #endif
