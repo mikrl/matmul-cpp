@@ -24,7 +24,7 @@ int count_cols(std::vector<std::vector<float>> matrix){
 }
 
 std::pair<int, int> get_dims(std::vector<std::vector<float>> matrix){
-    std::pair dims = {count_rows(matrix), count_cols(matrix)};
+    std::pair<int, int> dims = {count_rows(matrix), count_cols(matrix)};
     return dims;
 
 }
