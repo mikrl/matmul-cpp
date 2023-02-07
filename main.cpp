@@ -11,8 +11,12 @@ int main(){
     std::cout << '\n';
     print_matrix(B);
     std::cout << '\n';
+    std::cout << "################################################\n";
     auto C = matmul_simple(A, B);
     print_matrix(C);
+    std::cout << "################################################\n";
+    auto C2 = matmul_cuda(A, B);
+    print_matrix(C2);
     return 0;
 }
 
