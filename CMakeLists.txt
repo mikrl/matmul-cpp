@@ -1,70 +1,67 @@
-cmake_minimum_required(VERSION 3.10)
-project(MyProject)
+cmake_minimum_required(VERSION 3.13)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+# set CUDA version
+set(CUDA_VERSION 11.0)
 
-# CUDA
-find_package(CUDA REQUIRED)
-set(CUDA_SEPARABLE_COMPILATION ON)
+# set cuda architectures to build for
+set(CUDA_ARCH "-gencode=arch=compute_70,code=sm_70 -gencode=arch=compute_75,code=sm_75")
 
-# GTest
-find_package(GTest REQUIRED)
+# set project name
+project(MatMul CXX CUDA)
+
+# specify compiler flags
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CUDA_STANDARD 11)
+set(CMAKE_CUDA_STANDARD_REQUIRED True)
+
+# include cuda libraries
+find_package(CUDA ${CUDA_VERSION} REQUIRED)
+
+# specify include directories
+include_directories(include)
+include_directories(/usr/local/cuda/include)
+
+# add CUDA library
+cuda_add_library(matmul_cuda
+    src/matmul.cu
+)
+
+# add C++ libraries
+add_library(matrix_utils src/matrix_utils.cpp)
+add_library(matmul src/matmul.cpp)
+
+# specify libraries to link
+target_link_libraries(matrix_utils PRIVATE matmul_cuda)
+target_link_libraries(matmul PRIVATE matrix_utils)
+
+# specify executable
+add_executable(main src/main.cpp)
+target_link_libraries(main PRIVATE matmul)
+
+# set build type
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# specify cuda flags
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -lineinfo ${CUDA_ARCH}")
+
+# enable tests
 enable_testing()
 
-# Find PyBind11
-set(PYBIND11_CPP_STANDARD -std=c++11)
-add_subdirectory(extern/pybind11)
+# add C++ test executable for matmul tests
+add_executable(matmul_test test/matmul_test.cpp)
+target_link_libraries(matmul_test PRIVATE matmul)
+add_test(NAME matmul_test COMMAND matmul_test)
 
-# Include Directories
-include_directories(
-  include
-  extern/pybind11/include
-  ${GTEST_INCLUDE_DIRS}
-)
+# add C++ test executable for matutil tests
+add_executable(matutils_test test/matutils_test.cpp)
+target_link_libraries(matutils_test PRIVATE matmul)
+add_test(NAME matutils_test COMMAND matutils_test)
 
-# Library Sources
-set(CUDA_SOURCES
-  src/matrix_utils.cu
-  src/matmul.cu
-)
+# add gtest library
+find_package(GTest REQUIRED)
+target_link_libraries(matmul_test PRIVATE GTest::GTest GTest::Main)
+target_link_libraries(matutils_test PRIVATE GTest::GTest GTest::Main)
 
-set(CPP_SOURCES
-  src/matrix_utils.cpp
-  src/matmul.cpp
-  src/matmul_binding.cpp
-)
-
-# Build CUDA Libraries
-cuda_add_library(cuda_lib ${CUDA_SOURCES})
-
-# Build CPP Libraries
-add_library(cpp_lib ${CPP_SOURCES})
-target_link_libraries(cpp_lib
-  cuda_lib
-  pybind11::pybind11
-)
-
-# Main Executable
-cuda_add_executable(main
-  src/main.cpp
-)
-
-target_link_libraries(main
-  cpp_lib
-)
-
-# Test Executable
-add_executable(tests
-  test/matmul_test.cpp
-  test/matutils_test.cpp
-)
-
-target_link_libraries(tests
-  cpp_lib
-  ${GTEST_BOTH_LIBRARIES}
-)
-
-# Add Tests
-add_test(Test tests)
